@@ -308,16 +308,21 @@
   }
 
   .category-buttons {
+    display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin: 20px 0px 10px 0px;
-    /* border: 1px solid red; */
+    margin: 10px 0px 10px 0px;
+    width: 100%;
+    overflow-x: auto;
+    padding: 5px 0px 10px 0px;
   }
+
   .category-button {
     padding: 5px 15px;
     height: 100%;
     margin: 0px 3px;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+    flex: 1;
   }
 
   @media screen and (max-width: 480px) {
