@@ -4,6 +4,10 @@
   import SearchBar from "./SearchBar.svelte";
   import Clock from "./Clock.svelte";
   import Name from "./Name.svelte";
+
+  import { scale } from "svelte/transition";
+
+  let showAttributions = true;
 </script>
 
 <main>
@@ -17,6 +21,19 @@
   <SearchBar />
   <Bookmarks />
   <Settings />
+  {#if showAttributions}
+    <div class="attributions" transition:scale>
+      <p>
+        Icon by <a href="https://freeicons.io/profile/3484">BECRIS</a> on
+        <a href="https://freeicons.io">freeicons.io</a>
+      </p>
+      <button
+        on:click={() => {
+          showAttributions = !showAttributions;
+        }}>X</button
+      >
+    </div>
+  {/if}
 </main>
 
 <style>
@@ -24,7 +41,7 @@
   :root {
     --bg-color: #eee;
     --text-color: #222831;
-    --accent-color: #ccc;
+    --accent-color: rgb(250, 250, 250);
     --bg-alt: #eee;
   }
 
@@ -43,11 +60,9 @@
 
   main {
     display: flex;
-    /* place-items: center; */
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* padding: 0px 30px; */
     margin: 0 auto;
     width: 600px;
     min-height: 100vh;
@@ -61,16 +76,33 @@
 
   .info-section {
     display: flex;
-    /* align-items: center; */
     justify-content: space-around;
     width: 100%;
-    /* color: #eee; */
+  }
+
+  .attributions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    margin-bottom: 10px;
+    background-color: var(--bg-alt);
+    color: var(--text-color);
+    width: 90%;
+    border-radius: 5px;
+  }
+
+  .attributions a {
+    color: #00adb5;
   }
 
   @media screen and (max-width: 480px) {
     main {
-      /* border: 1px solid red; */
       width: 95%;
+    }
+
+    .attributions {
+      padding: 15px;
     }
   }
 </style>

@@ -167,6 +167,9 @@
 >
 <div class="debug-section">
   <h2 class="debug-section-header">Debug Section</h2>
+  <p class="debug-section-text">
+    This is a work in progress. Expect some bugs ☺️
+  </p>
   <button on:click={getBookmarks}>Retrieve All Bookmarks</button>
   <button on:click={retrieveCategories}>Categorize</button>
 </div>
@@ -205,9 +208,9 @@
   }
 
   .new-bookmark-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    position: fixed;
+    bottom: 30px;
+    right: 25px;
     font-size: 32px;
     border-radius: 50px;
     padding: 5px 13px;
@@ -222,7 +225,7 @@
 
   .categories {
     width: 100%;
-    /* border: 1px solid red; */
+    margin-bottom: 10px;
   }
 
   .category {
@@ -235,9 +238,8 @@
     border-radius: 5px;
     text-align: center;
     min-width: 100%;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.25);
     min-height: 250px;
-    /* border: 2px solid red; */
   }
 
   .debug-section {
@@ -255,7 +257,11 @@
   }
 
   .debug-section-header {
-    padding: 10px 0px;
+    padding: 10px 0px 5px 0px;
+  }
+
+  .debug-section-text {
+    margin-bottom: 10px;
   }
 
   .bookmark-button-section {
@@ -320,14 +326,6 @@
       margin: 0 auto;
       background-color: var(--bg-alt);
       border: 3px solid var(--button-color);
-    }
-
-    .new-bookmark-button {
-      bottom: 80px;
-      right: 20px;
-      margin: 0px;
-      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
-      /* z-index: 1; */
     }
   }
 </style>

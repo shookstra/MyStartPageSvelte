@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { scale } from "svelte/transition";
+  import { slide } from "svelte/transition";
 
   // define the db
   const db = new Dexie("searchHistory");
@@ -66,15 +66,19 @@
 </div>
 
 {#if showHistory}
-  <div transition:scale class="search-history">
+  <div transition:slide class="search-history">
     <h2>Search History</h2>
-    {#each searchHistory as item, index}
-      {#if index <= 5}
-        <a href="https://www.duckduckgo.com?q={item.searchTerm}">
-          {item.searchTerm}
-        </a>
-      {/if}
-    {/each}
+    {#if searchHistory.length <= 0}
+      <p>Nothing here yet :(</p>
+    {:else}
+      {#each searchHistory as item, index}
+        {#if index <= 5}
+          <a href="https://www.duckduckgo.com?q={item.searchTerm}">
+            {item.searchTerm}
+          </a>
+        {/if}
+      {/each}
+    {/if}
   </div>
 {/if}
 
@@ -91,27 +95,29 @@
   }
 
   .search-history {
-    position: absolute;
+    /* position: absolute; */
     top: 370px;
     display: flex;
     flex-direction: column;
     background-color: var(--bg-alt);
     color: var(--text-color);
     /* width: 100%; */
-    width: 650px;
+    /* width: 650px; */
     padding: 10px 0px;
-    margin: 5px 0px;
+    margin: 10px 0px 5px 0px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
+    width: 100%;
   }
 
   a,
+  p,
   h2 {
     padding: 1px 10px;
   }
 
   a {
-    color: var(--text-color);
+    color: #00adb5;
     text-decoration: none;
   }
 
@@ -126,11 +132,6 @@
     }
     .search-bar > *:nth-child(2) {
       margin: 5px 0px 0px 0px;
-    }
-
-    .search-history {
-      top: 165px;
-      width: 97%;
     }
   }
 </style>
