@@ -4,20 +4,29 @@
   import SearchBar from "./SearchBar.svelte";
   import Clock from "./Clock.svelte";
   import Name from "./Name.svelte";
+
+  import { onMount } from "svelte";
+
+  import { blur } from "svelte/transition";
+
+  let ready = false;
+  onMount(() => (ready = true));
 </script>
 
-<main>
-  <header>
-    <h1>MyStartPage</h1>
-  </header>
-  <div class="info-section">
-    <Name />
-    <Clock />
-  </div>
-  <SearchBar />
-  <Bookmarks />
-  <Settings />
-</main>
+{#if ready}
+  <main transition:blur={{}}>
+    <header>
+      <h1>MyStartPage</h1>
+    </header>
+    <div class="info-section">
+      <Name />
+      <Clock />
+    </div>
+    <SearchBar />
+    <Bookmarks />
+    <Settings />
+  </main>
+{/if}
 
 <style>
   /* dark mode / light mode styles */

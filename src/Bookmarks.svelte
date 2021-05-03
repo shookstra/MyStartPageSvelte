@@ -159,7 +159,12 @@
       {#each bookmarksArray as bookmark}
         {#if bookmark.category === category}
           <div class="bookmark" transition:scale>
-            <a href={bookmark.url} target="_blank" title={bookmark.description}>
+            <a
+              href={bookmark.url}
+              target="_blank"
+              title={bookmark.description}
+              rel="noopener noreferrer"
+            >
               {bookmark.bookmarkName}
             </a>
             <div class="bookmark-button-section">

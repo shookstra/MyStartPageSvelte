@@ -14,6 +14,16 @@
 
   onMount(async () => {
     await getSearchHistory();
+    document.getElementById("search-bar").focus();
+
+    const searchBar = document.getElementById("search-bar");
+
+    searchBar.addEventListener("keyup", (event) => {
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        search();
+      }
+    });
   });
 
   const search = async () => {
@@ -54,6 +64,7 @@
     title="Search the internet"
     name="search-bar"
     placeholder="DuckDuckGo Search"
+    id="search-bar"
     bind:value={searchTerm}
     on:focus={() => {
       showHistory = true;
@@ -62,18 +73,21 @@
       showHistory = false;
     }}
   />
-  <button on:click={search} class="search-button">Search</button>
+  <button on:click={search} class="search-button"> Search </button>
 </div>
 
 {#if showHistory}
   <div transition:slide class="search-history">
     <h2>Search History</h2>
     {#if searchHistory.length <= 0}
-      <p>Nothing here yet :(</p>
+      <p>Nothing here yet 😪</p>
     {:else}
       {#each searchHistory as item, index}
         {#if index <= 5}
-          <a href="https://www.duckduckgo.com?q={item.searchTerm}">
+          <a
+            href="https://www.duckduckgo.com?q={item.searchTerm}"
+            rel="noopener noreferrer"
+          >
             {item.searchTerm}
           </a>
         {/if}
