@@ -7,6 +7,7 @@
   let bookmarksArray = [];
   let categories = [];
   let newBookmarkFormOpen = false;
+  let verboseTabs;
 
   // define the db
   const db = new Dexie("bookmarks");
@@ -14,10 +15,16 @@
     bookmarks: "bookmarkName,url,category,description",
   });
 
+  const settingsDB = new Dexie("settings");
+  settingsDB.version(1).stores({
+    settings: "settingName,settingValue",
+  });
+
   onMount(async () => {
     await getBookmarks();
     await retrieveCategories();
-    selectFirstCategory();
+    await selectFirstCategory();
+    await getTabSettings();
   });
 
   // on new bookmark created reload list of bookmarks
@@ -78,6 +85,18 @@
     });
   };
 
+  const getTabSettings = async () => {
+    await settingsDB.settings
+      .get("verboseTabs")
+      .then((setting) => {
+        console.log(setting.settingValue);
+        verboseTabs = setting.settingValue;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const showCategory = (category) => {
     const categories = document
       .getElementById("categories")
@@ -121,9 +140,15 @@
 
 <div class="category-buttons">
   {#each categories as category, index}
-    <button class="category-button" on:click={showCategory(category)}
-      >{index + 1}</button
-    >
+    {#if verboseTabs}
+      <button class="category-button" on:click={showCategory(category)}>
+        {category}
+      </button>
+    {:else}
+      <button class="category-button" on:click={showCategory(category)}>
+        {index + 1}
+      </button>
+    {/if}
   {/each}
 </div>
 <!-- categorize each bookmark into columns -->
@@ -134,9 +159,9 @@
       {#each bookmarksArray as bookmark}
         {#if bookmark.category === category}
           <div class="bookmark" transition:scale>
-            <a href={bookmark.url} target="_blank" title={bookmark.description}
-              >{bookmark.bookmarkName}</a
-            >
+            <a href={bookmark.url} target="_blank" title={bookmark.description}>
+              {bookmark.bookmarkName}
+            </a>
             <div class="bookmark-button-section">
               <button
                 on:click={deleteBookmark(bookmark.bookmarkName)}
@@ -216,6 +241,7 @@
     padding: 5px 13px;
     z-index: 0;
     transition: background-color 250ms ease;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.35);
   }
 
   .new-bookmark-button:hover,
@@ -291,6 +317,7 @@
     padding: 5px 15px;
     height: 100%;
     margin: 0px 3px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   }
 
   @media screen and (max-width: 480px) {

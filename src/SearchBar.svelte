@@ -92,21 +92,18 @@
   }
   input {
     width: 100%;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   }
 
   .search-history {
-    /* position: absolute; */
-    top: 370px;
     display: flex;
     flex-direction: column;
     background-color: var(--bg-alt);
     color: var(--text-color);
-    /* width: 100%; */
-    /* width: 650px; */
     padding: 10px 0px;
     margin: 10px 0px 5px 0px;
     border-radius: 5px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
     width: 100%;
   }
 
@@ -123,6 +120,10 @@
 
   a:hover {
     text-decoration: underline;
+  }
+
+  button {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
   }
 
   @media screen and (max-width: 480px) {

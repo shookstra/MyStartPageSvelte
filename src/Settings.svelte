@@ -6,6 +6,7 @@
   let name = "";
   let twelveHour = false;
   let darkMode;
+  let verboseTabs;
 
   const db = new Dexie("settings");
   db.version(1).stores({
@@ -16,6 +17,7 @@
     await getName();
     await getTimeFormat();
     await getTheme();
+    await getTabSettings();
 
     if (darkMode) {
       toggleDarkMode();
@@ -48,7 +50,6 @@
       .get("name")
       .then((setting) => {
         name = setting.settingValue;
-        // console.log(setting.settingValue);
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +60,6 @@
     await db.settings
       .get("timeFormat")
       .then((setting) => {
-        console.log(setting.settingValue);
         if (setting.settingValue === "24-hour") {
           twelveHour = false;
         } else {
@@ -81,7 +81,6 @@
           settingValue: timeFormat,
         })
         .then((setting) => {
-          console.log(setting);
           location.reload();
         })
         .catch((err) => {
@@ -116,10 +115,38 @@
       });
   };
 
+  const saveTabSettings = async () => {
+    await db.settings
+      .put({
+        settingName: "verboseTabs",
+        settingValue: verboseTabs,
+      })
+      .then((setting) => {
+        console.log(setting);
+        location.reload();
+      })
+      .catch((err) => {
+        alert("Oops: " + err);
+      });
+  };
+
+  const getTabSettings = async () => {
+    await db.settings
+      .get("verboseTabs")
+      .then((setting) => {
+        console.log(setting.settingValue);
+        verboseTabs = setting.settingValue;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const saveSettings = () => {
     saveName();
     saveTimeFormat();
     saveTheme();
+    saveTabSettings();
   };
 </script>
 
@@ -171,6 +198,16 @@
         name="dark-mode"
         bind:checked={darkMode}
         on:change={toggleDarkMode}
+      />
+    </div>
+
+    <!-- dark mode -->
+    <div class="settings-field checkbox-field">
+      <label for="verboseCategories">Verbose Tab Formatting</label>
+      <input
+        type="checkbox"
+        name="verboseCategories"
+        bind:checked={verboseTabs}
       />
     </div>
 
