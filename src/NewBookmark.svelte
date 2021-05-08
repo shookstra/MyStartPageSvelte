@@ -2,16 +2,21 @@
   import { createEventDispatcher } from "svelte";
   import { slide } from "svelte/transition";
 
-  let bookmarkName = "";
-  let url = "";
-  let category = "";
-  let description = "";
+  export let bookmarkName = "";
+  export let url = "";
+  export let category = "";
+  export let description = "";
+  export let oldBookmarkName = "";
+  export let updatingBookmark;
 
-  let protocol;
-  let subDomain;
-  let topLevelDomain;
+  let showURLHint = false;
 
   let errorMessages = [];
+
+  const db = new Dexie("bookmarks");
+  db.version(1).stores({
+    bookmarks: "bookmarkName,url,category,description",
+  });
 
   const dispatch = createEventDispatcher();
 
@@ -33,28 +38,21 @@
       errorMessages.push("Please enter a bookmark name.");
     if (url === "") errorMessages.push("Please enter a URL.");
     if (category === "") errorMessages.push("Please enter a category.");
-    if (protocol === "") errorMessages.push("Please choose a protocol.");
-    if (subDomain === "") errorMessages.push("Please choose a subdomain.");
-    if (topLevelDomain === "")
-      errorMessages.push("Please choose a top level domain.");
 
     if (errorMessages.length == 0) {
-      createBookmark();
+      if (updatingBookmark) {
+        updateBookmark();
+      } else {
+        createBookmark();
+      }
     }
   };
 
   const createBookmark = async () => {
-    const db = new Dexie("bookmarks");
-    db.version(1).stores({
-      bookmarks: "bookmarkName,url,category,description",
-    });
-
-    console.log(protocol + subDomain + url + topLevelDomain);
-
     db.bookmarks
       .put({
         bookmarkName: bookmarkName,
-        url: protocol + subDomain + url + topLevelDomain,
+        url: url,
         category: category,
         description: description,
       })
@@ -66,6 +64,23 @@
       })
       .catch(function (err) {
         alert("Oops: " + err);
+      });
+  };
+
+  const updateBookmark = async () => {
+    await db.bookmarks
+      .update(oldBookmarkName, {
+        bookmarkName: bookmarkName,
+        url: url,
+        category: category,
+        description: description,
+      })
+      .then(() => {
+        console.log(`${oldBookmarkName} was renamed to ${bookmarkName}`);
+        createNewBookmarkDispatcher();
+      })
+      .catch((err) => {
+        alert("There was an error: " + err);
       });
   };
 
@@ -97,33 +112,51 @@
 >
 <div class="new-bookmark-section">
   <label for="bookmarkName">Bookmark name</label>
-  <input type="text" name="bookmarkName" bind:value={bookmarkName} />
+  <input
+    type="text"
+    name="bookmarkName"
+    bind:value={bookmarkName}
+    placeholder="Google"
+  />
 </div>
 <div class="new-bookmark-section">
   <label for="url">URL</label>
-  <div class="url-text-section">
-    <select class="url-prefix" bind:value={protocol}>
-      <option>https://</option>
-      <option>http://</option>
-    </select>
-    <select class="url-prefix" bind:value={subDomain}>
-      <option>www.</option>
-    </select>
-    <input type="text" name="url" bind:value={url} />
-    <select class="url-prefix" bind:value={topLevelDomain}>
-      <option>.com</option>
-      <option>.org</option>
-      <option>.net</option>
-    </select>
-  </div>
+  {#if showURLHint}
+    <p class="url-tip" transition:slide>
+      Make sure to include the protocol (e.g. "https" and "http"), subdomain
+      (e.g. "www"), and top level domain (e.g. ".com" or ".org")
+    </p>
+  {/if}
+  <input
+    type="text"
+    name="url"
+    bind:value={url}
+    on:focus={() => {
+      showURLHint = true;
+    }}
+    on:focusout={() => {
+      showURLHint = false;
+    }}
+    placeholder="https://www.google.com"
+  />
 </div>
 <div class="new-bookmark-section">
   <label for="category">Category</label>
-  <input type="text" name="category" bind:value={category} />
+  <input
+    type="text"
+    name="category"
+    bind:value={category}
+    placeholder="Search Engines"
+  />
 </div>
 <div class="new-bookmark-section">
   <label for="description">Description (optional)</label>
-  <input type="text" name="description" bind:value={description} />
+  <input
+    type="text"
+    name="description"
+    bind:value={description}
+    placeholder="Search the web"
+  />
 </div>
 {#if errorMessages.length > 0}
   <div transition:slide>
@@ -136,7 +169,6 @@
 <h3>Debug</h3>
 <button on:click={createDefaultBookmark}>Create Default</button>
 
-<!-- <p>{protocol + subDomain + url + topLevelDomain}</p> -->
 <style>
   h2 {
     font-weight: normal;
@@ -148,7 +180,9 @@
   }
 
   label {
-    padding-bottom: 3px;
+    padding: 3px 0px;
+    font-weight: bold;
+    font-size: 1.15rem;
   }
 
   .new-bookmark-section {
@@ -173,20 +207,6 @@
     background-color: #06d6a0;
   }
 
-  .url-text-section {
-    display: flex;
-    align-items: stretch;
-  }
-
-  .url-prefix {
-    display: inline;
-    background-color: #06d6a0;
-    height: 100%;
-    padding: 10px;
-    margin: 0px 2px;
-    border-radius: 5px;
-  }
-
   .new-bookmark-close-button {
     position: absolute;
     right: 10px;
@@ -198,14 +218,14 @@
   .new-bookmark-close-button:focus {
     background-color: #ff2e63;
   }
-  @media screen and (max-width: 480px) {
-    .url-text-section {
-      display: flex;
-      flex-direction: column;
-    }
 
-    .url-prefix {
-      margin: 3px 0px;
-    }
+  .url-tip {
+    background-color: var(--bg-color);
+    margin: 0px 5px 10px 0px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+  }
+  @media screen and (max-width: 630px) {
   }
 </style>

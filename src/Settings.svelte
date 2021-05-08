@@ -36,7 +36,6 @@
           settingValue: name,
         })
         .then((setting) => {
-          console.log(setting);
           location.reload();
         })
         .catch((err) => {
@@ -96,7 +95,6 @@
         settingValue: darkMode,
       })
       .then((setting) => {
-        console.log(setting);
         location.reload();
       })
       .catch((err) => {
@@ -122,7 +120,6 @@
         settingValue: verboseTabs,
       })
       .then((setting) => {
-        console.log(setting);
         location.reload();
       })
       .catch((err) => {
@@ -134,7 +131,6 @@
     await db.settings
       .get("verboseTabs")
       .then((setting) => {
-        console.log(setting.settingValue);
         verboseTabs = setting.settingValue;
       })
       .catch((err) => {

@@ -72,7 +72,7 @@
     width: 100%;
   }
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 630px) {
     main {
       width: 95%;
     }

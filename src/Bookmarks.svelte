@@ -9,6 +9,13 @@
   let newBookmarkFormOpen = false;
   let verboseTabs;
 
+  let bookmarkName = "";
+  let url = "";
+  let category = "";
+  let description = "";
+
+  let updatingBookmark = false;
+
   // define the db
   const db = new Dexie("bookmarks");
   db.version(1).stores({
@@ -76,6 +83,31 @@
       });
   };
 
+  const openNewBookmarkModal = () => {
+    bookmarkName = "";
+    url = "";
+    category = "";
+    description = "";
+
+    updatingBookmark = false;
+    newBookmarkFormOpen = !newBookmarkFormOpen;
+  };
+
+  const openUpdateBookmark = async (oldBookmarkName) => {
+    const bookmark = await db.bookmarks.get({
+      bookmarkName: oldBookmarkName,
+    });
+
+    bookmarkName = bookmark.bookmarkName;
+    url = bookmark.url;
+    category = bookmark.category;
+    description = bookmark.description;
+
+    newBookmarkFormOpen = !newBookmarkFormOpen;
+    updatingBookmark = true;
+    console.dir(bookmark);
+  };
+
   const retrieveCategories = () => {
     categories = [];
     bookmarksArray.forEach((bookmark) => {
@@ -89,7 +121,6 @@
     await settingsDB.settings
       .get("verboseTabs")
       .then((setting) => {
-        console.log(setting.settingValue);
         verboseTabs = setting.settingValue;
       })
       .catch((err) => {
@@ -134,6 +165,12 @@
     <NewBookmark
       on:newBookmark={handleNewBookmark}
       on:closeNewBookmarkForm={handleCloseNewBookmarkForm}
+      {bookmarkName}
+      {url}
+      {category}
+      {description}
+      oldBookmarkName={bookmarkName}
+      {updatingBookmark}
     />
   </div>
 {/if}
@@ -165,11 +202,15 @@
               title={bookmark.description}
               rel="noopener noreferrer"
             >
-              {bookmark.bookmarkName}
+              {#if bookmark.bookmarkName.length > 20}
+                {bookmark.bookmarkName.substring(0, 20) + "..."}
+              {:else}
+                {bookmark.bookmarkName}
+              {/if}
             </a>
             <div class="bookmark-button-section">
               <button
-                on:click={deleteBookmark(bookmark.bookmarkName)}
+                on:click={openUpdateBookmark(bookmark.bookmarkName)}
                 class="bookmark-button"
                 alt="Edit {bookmark.bookmarkName}"
                 title="Edit {bookmark.bookmarkName}">✏️</button
@@ -190,9 +231,7 @@
 
 <button
   class="new-bookmark-button"
-  on:click={() => {
-    newBookmarkFormOpen = !newBookmarkFormOpen;
-  }}
+  on:click={() => openNewBookmarkModal("new")}
   title="Create new bookmark">➕</button
 >
 <div class="debug-section">
@@ -202,6 +241,7 @@
   </p>
   <button on:click={getBookmarks}>Retrieve All Bookmarks</button>
   <button on:click={retrieveCategories}>Categorize</button>
+  <p>Updating bookmark: {updatingBookmark}</p>
 </div>
 
 <style>
@@ -244,7 +284,7 @@
     font-size: 32px;
     border-radius: 50px;
     padding: 5px 13px;
-    z-index: 0;
+    z-index: 1;
     transition: background-color 250ms ease;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.35);
   }
@@ -284,7 +324,6 @@
     bottom: 20px;
     left: 20px;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.35);
-    z-index: -1;
   }
 
   .debug-section-header {
@@ -319,6 +358,7 @@
     width: 100%;
     overflow-x: auto;
     padding: 5px 0px 10px 0px;
+    z-index: 0;
   }
 
   .category-button {
@@ -330,7 +370,7 @@
     flex: 1;
   }
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 630px) {
     .category-buttons {
       align-items: center;
       justify-content: space-between;
@@ -363,6 +403,11 @@
       margin: 0 auto;
       background-color: var(--bg-alt);
       border: 3px solid var(--button-color);
+      z-index: 2;
+    }
+
+    .category-buttons {
+      padding: 5px 0px 15px 0px;
     }
   }
 </style>

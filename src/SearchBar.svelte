@@ -140,7 +140,7 @@
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.35);
   }
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 630px) {
     .search-bar {
       display: flex;
       flex-direction: column;
