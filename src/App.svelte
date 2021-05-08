@@ -7,26 +7,36 @@
 
   import { onMount } from "svelte";
 
-  import { blur } from "svelte/transition";
+  import { slide } from "svelte/transition";
 
   let ready = false;
-  onMount(() => (ready = true));
+  onMount(() => {
+    ready = true;
+  });
 </script>
 
-{#if ready}
-  <main transition:blur={{}}>
-    <header>
-      <h1>MyStartPage</h1>
-    </header>
-    <div class="info-section">
-      <Name />
-      <Clock />
-    </div>
-    <SearchBar />
-    <Bookmarks />
-    <Settings />
-  </main>
+{#if !ready}
+  <p
+    class="loading-overlay"
+    id="loading-overlay"
+    out:slide={{ duration: 350, delay: 500 }}
+  >
+    Loading...
+  </p>
 {/if}
+
+<main>
+  <header>
+    <h1>MyStartPage</h1>
+  </header>
+  <div class="info-section">
+    <Name />
+    <Clock />
+  </div>
+  <SearchBar />
+  <Bookmarks />
+  <Settings />
+</main>
 
 <style>
   /* dark mode / light mode styles */
@@ -70,6 +80,22 @@
     display: flex;
     justify-content: space-around;
     width: 100%;
+  }
+
+  .loading-overlay {
+    background-color: #222831;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #eee;
+    z-index: 3;
   }
 
   @media screen and (max-width: 630px) {
