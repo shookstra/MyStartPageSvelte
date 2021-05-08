@@ -83,7 +83,7 @@
       <p>Nothing here yet 😪</p>
     {:else}
       {#each searchHistory as item, index}
-        {#if index <= 5}
+        {#if index < 5}
           <a
             href="https://www.duckduckgo.com?q={item.searchTerm}"
             rel="noopener noreferrer"

@@ -170,7 +170,7 @@
 
     <!-- name settings -->
     <div class="settings-field">
-      <label for="name">Name</label>
+      <label for="name" class="name">Name</label>
       <input
         type="text"
         bind:value={name}
@@ -182,29 +182,41 @@
 
     <!-- clock settings -->
     <div class="settings-field checkbox-field">
-      <label for="12-hour-clock">12-Hour Clock</label>
-      <input type="checkbox" name="12-hour-clock" bind:checked={twelveHour} />
+      <label for="12-hour-clock" class="name">12-Hour Clock</label>
+      <input
+        type="checkbox"
+        name="12-hour-clock"
+        bind:checked={twelveHour}
+        class="check"
+      />
+      <p class="description">Display a 12-hour clock or 24-hour clock.</p>
     </div>
 
     <!-- dark mode -->
     <div class="settings-field checkbox-field">
-      <label for="dark-mode">Dark Mode</label>
+      <label for="dark-mode" class="name">Dark Mode</label>
       <input
         type="checkbox"
         name="dark-mode"
         bind:checked={darkMode}
         on:change={toggleDarkMode}
+        class="check"
       />
+      <p class="description">Switch between dark mode and light mode.</p>
     </div>
 
-    <!-- dark mode -->
+    <!-- verbose tab formatting -->
     <div class="settings-field checkbox-field">
-      <label for="verboseCategories">Verbose Tab Formatting</label>
+      <label for="verboseCategories" class="name">Verbose Tab Formatting</label>
       <input
         type="checkbox"
         name="verboseCategories"
         bind:checked={verboseTabs}
+        class="check"
       />
+      <p class="description">
+        Display category names in tabs instead of numbering them.
+      </p>
     </div>
 
     <button on:click={saveSettings}>Save</button>
@@ -235,7 +247,6 @@
   .settings-field {
     width: 100%;
     padding: 0px 0px;
-    /* border: 1px solid red; */
   }
 
   .settings-field label {
@@ -267,6 +278,7 @@
 
   button {
     padding: 5px;
+    margin-top: 15px;
   }
 
   .sidebar-close {
@@ -283,7 +295,27 @@
   }
 
   .checkbox-field {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1.8fr 0.2fr;
+    grid-template-rows: 0.8fr 0.2fr;
+    gap: 0px 0px;
+    grid-template-areas:
+      "name check"
+      "description description";
+  }
+  .name {
+    grid-area: name;
+    align-self: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  .check {
+    grid-area: check;
+    justify-self: end;
+    align-self: center;
+  }
+  .description {
+    grid-area: description;
+    font-size: 0.9rem;
   }
 </style>
