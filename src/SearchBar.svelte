@@ -10,6 +10,8 @@
 
   let searchTerm = "";
   let searchHistory = [];
+  // removed hiding the search history for now.
+  // I may include it at a later time if I find a better implementation
   let showHistory = false;
 
   onMount(async () => {
@@ -76,25 +78,23 @@
   <button on:click={search} class="search-button"> Search </button>
 </div>
 
-{#if showHistory}
-  <div transition:slide class="search-history">
-    <h2>Search History</h2>
-    {#if searchHistory.length <= 0}
-      <p>Nothing here yet 😪</p>
-    {:else}
-      {#each searchHistory as item, index}
-        {#if index < 5}
-          <a
-            href="https://www.duckduckgo.com?q={item.searchTerm}"
-            rel="noopener noreferrer"
-          >
-            {item.searchTerm}
-          </a>
-        {/if}
-      {/each}
-    {/if}
-  </div>
-{/if}
+<div transition:slide class="search-history">
+  <h2>Search History</h2>
+  {#if searchHistory.length <= 0}
+    <p>Nothing here yet 😪</p>
+  {:else}
+    {#each searchHistory as item, index}
+      {#if index < 5}
+        <a
+          href="https://www.duckduckgo.com?q={item.searchTerm}"
+          rel="noopener noreferrer"
+        >
+          {item.searchTerm}
+        </a>
+      {/if}
+    {/each}
+  {/if}
+</div>
 
 <style>
   .search-bar {
